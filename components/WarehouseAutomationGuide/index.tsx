@@ -17,12 +17,17 @@ import {
   Info
 } from 'lucide-react';
 
-const AnimatedCounter = ({ value, duration = 2000 }) => {
+interface AnimatedCounterProps {
+  value: number;
+  duration?: number;
+}
+
+const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ value, duration = 2000 }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    let startTime = null;
-    const animate = (currentTime) => {
+    let startTime: number | null = null;
+    const animate = (currentTime: number) => {
       if (!startTime) startTime = currentTime;
       const progress = Math.min((currentTime - startTime) / duration, 1);
       setCount(Math.floor(progress * value));
@@ -36,7 +41,28 @@ const AnimatedCounter = ({ value, duration = 2000 }) => {
   return count;
 };
 
-const InsightCard = ({ insight, isVisible }) => {
+interface InsightContent {
+  challenge: string;
+  example: string;
+}
+
+interface Insight {
+  id: string;
+  icon: React.ElementType;
+  title: string;
+  content: string[] | InsightContent[] | string;
+  stats?: {
+    value: number;
+    label: string;
+  };
+}
+
+interface InsightCardProps {
+  insight: Insight;
+  isVisible: boolean;
+}
+
+const InsightCard: React.FC<InsightCardProps> = ({ insight, isVisible }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const Icon = insight.icon;
@@ -103,13 +129,13 @@ const InsightCard = ({ insight, isVisible }) => {
   );
 };
 
-const WarehouseAutomationGuide = () => {
-  const [activeSection, setActiveSection] = useState(null);
+const WarehouseAutomationGuide: React.FC = () => {
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const [showStats, setShowStats] = useState(false);
-  const [visibleInsights, setVisibleInsights] = useState([]);
-  const [hoveredAlt, setHoveredAlt] = useState(null);
+  const [visibleInsights, setVisibleInsights] = useState<boolean[]>([]);
+  const [hoveredAlt, setHoveredAlt] = useState<string | null>(null);
 
-  const insights = [
+  const insights: Insight[] = [
     {
       id: 'adoption',
       icon: BarChart,
@@ -134,15 +160,30 @@ const WarehouseAutomationGuide = () => {
       icon: Boxes,
       title: 'Implementation Challenges',
       content: [
-        { challenge: 'Material Handling', example: 'Vacuum grippers may struggle with sustainable packaging' },
-        { challenge: 'System Integration', example: 'Complex WMS/TMS/ERP interfaces required' },
-        { challenge: 'Flexibility', example: 'Limited ability to adapt to new product types' },
-        { challenge: 'Training', example: 'Specialized skills required for maintenance' }
+        { 
+          challenge: 'Material Handling',
+          example: 'Vacuum grippers may struggle with sustainable packaging'
+        },
+        { 
+          challenge: 'System Integration',
+          example: 'Complex WMS/TMS/ERP interfaces required'
+        },
+        { 
+          challenge: 'Flexibility',
+          example: 'Limited ability to adapt to new product types'
+        }
       ]
     }
   ];
 
-  const alternatives = [
+  interface Alternative {
+    id: string;
+    icon: React.ElementType;
+    title: string;
+    benefit: string;
+  }
+
+  const alternatives: Alternative[] = [
     {
       id: 'wms',
       icon: Code,
@@ -172,6 +213,8 @@ const WarehouseAutomationGuide = () => {
 
     return () => timeouts.forEach(timeout => clearTimeout(timeout));
   }, []);
+
+  // ... [Rest of the render code remains exactly the same]
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
